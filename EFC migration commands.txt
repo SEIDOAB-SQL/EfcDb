@@ -1,0 +1,34 @@
+﻿In Windows, open PMC and ensure that the Class Library project, DbContext, is the default project.
+In VSC open a terminal in DbContext project.
+
+
+VSCode Database migrations.
+--------------------------------
+On macOS in the terminal, type below commands. After each migration you will get a success confirmation from EFC.
+Use command depending on your database.
+
+SQLServer:
+dotnet ef migrations add initial_migration --context SqlServerDbContext --output-dir Migrations/SqlServerDbContext
+
+Postgres:
+dotnet ef migrations add initial_migration --context PostgresDbContext --output-dir Migrations/PostgresMigrations
+
+
+
+VSC Commit the migrations to the Database (create or update the databases).
+----------------------------------------------------------------------------
+SQLServer:
+dotnet ef database update --context SqlServerDbContext
+
+Postgres:
+dotnet ef database update --context PostgresDbContext
+
+
+Windows Commit the migrations to the Database (create or update the databases).
+----------------------------------------------------------------------------
+SQLServer:
+update-database -context SqlServerDbContext
+
+Postgres:
+update-database -context PostgresDbContext
+
