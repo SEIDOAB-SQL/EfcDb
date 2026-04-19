@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="AppSeeder/AppSeeder.csproj" />
+  <Project Path="DbContext/DbContext.csproj" />
+  <Project Path="Models/Models.csproj" />
+  <Project Path="Configuration/Configuration.csproj" />
+</Solution>
