@@ -31,34 +31,39 @@ namespace AppConsole
         {
             #region run below to test the model only
 
-            Console.WriteLine($"\nSeeding the Model...");
-            var modelList = SeedModel(nrItemsSeed);
+            // Console.WriteLine($"\nSeeding the Model...");
+            // var modelList = SeedModel(nrItemsSeed);
 
-            Console.WriteLine($"\nTesting Model...");
-            WriteModel(modelList);
-            #endregion
+            // Console.WriteLine($"\nTesting Model...");
+            // WriteModel(modelList);
+            // #endregion
 
 
-            #region  run below only when Database i created
-            Console.WriteLine($"\nConnecting to database...");
-            Console.WriteLine($"Database type: {AppConfig.DbSetActive.DbServer}");
-            Console.WriteLine($"Connection used: {AppConfig.DbSetActive.DbConnection}");
+            // #region  run below only when Database i created
+            // Console.WriteLine($"\nConnecting to database...");
+            // Console.WriteLine($"Database type: {AppConfig.DbSetActive.DbServer}");
+            // Console.WriteLine($"Connection used: {AppConfig.DbSetActive.DbConnection}");
   
-            Console.WriteLine($"\nSeeding database...");
-            try
-            {
-                SeedDataBase(modelList).Wait();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"\nError: Database could not be seeded. Ensure the database is correctly created");
-                Console.WriteLine($"\nError: {ex.Message}");
-                Console.WriteLine($"\nError: {ex.InnerException.Message}");
-                return;
-            }
+            // Console.WriteLine($"\nSeeding database...");
+            // try
+            // {
+            //     SeedDataBase(modelList).Wait();
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine($"\nError: Database could not be seeded. Ensure the database is correctly created");
+            //     Console.WriteLine($"\nError: {ex.Message}");
+            //     Console.WriteLine($"\nError: {ex.InnerException.Message}");
+            //     return;
+            // }
 
             Console.WriteLine("\nQuery database...");
             QueryDatabaseAsync().Wait();
+
+            Console.WriteLine("\nDANGER...Showing SQL Injection...");
+            SQLInjectionAsync3().Wait();
+
+
             #endregion
 
         }
@@ -142,6 +147,56 @@ namespace AppConsole
                 WriteModel(_modelList);
             }
         }
+
+        private static async Task SQLInjectionAsync1()
+        {
+            string userInput1 = "Sam"; //intention
+            //string userInput1 = "Sam' OR 1=1 --";
+
+            Console.WriteLine("-----DANGER---------");
+            using (var db = MainDbContext.DbContext())
+            {
+                var sql = $"SELECT * FROM Friend WHERE FirstName = '{userInput1}'";
+                Console.WriteLine($"SQL: {sql}");
+
+                var sqlResults = await db.Friend.FromSqlRaw(sql).ToListAsync();
+                WriteModel(sqlResults);
+            }
+        }
+
+        private static async Task SQLInjectionAsync2()
+        {
+            string userInput1 = "Sam"; //intention
+            string userInput2 = "Baggins"; //intention
+
+            //string userInput1 = "' or ''='' --";
+            //string userInput2 = "Baggins"; 
+            Console.WriteLine("-----DANGER---------");
+            using (var db = MainDbContext.DbContext())
+            {
+                var sql = $"SELECT * FROM Friend WHERE FirstName = '{userInput1}' AND LastName = '{userInput2}'";
+                Console.WriteLine($"SQL: {sql}");
+
+                var sqlResults = await db.Friend.FromSqlRaw(sql).ToListAsync();
+                WriteModel(sqlResults);
+            }
+        }
+
+        private static async Task SQLInjectionAsync3()
+        {
+            //string userInput1 = "Sam"; //intention
+            string userInput1 = "Sam'; DROP TABLE dbo.NewTable --";
+
+            Console.WriteLine("-----DANGER---------");
+            using (var db = MainDbContext.DbContext())
+            {
+                var sql = $"SELECT * FROM Friend WHERE FirstName = '{userInput1}'";
+                Console.WriteLine($"SQL: {sql}");
+
+                var sqlResults = await db.Friend.FromSqlRaw(sql).ToListAsync();
+                WriteModel(sqlResults);
+            }
+        }        
         #endregion
     }
 }
