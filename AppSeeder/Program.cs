@@ -58,9 +58,11 @@ namespace AppConsole
             // }
 
             Console.WriteLine("\nQuery database...");
-            QueryDatabaseAsync().Wait();
+            //QueryDatabaseAsync().Wait();
 
             Console.WriteLine("\nDANGER...Showing SQL Injection...");
+            //SQLInjectionAsync1().Wait();
+            //SQLInjectionAsync2().Wait();
             SQLInjectionAsync3().Wait();
 
 
@@ -150,8 +152,8 @@ namespace AppConsole
 
         private static async Task SQLInjectionAsync1()
         {
-            string userInput1 = "Sam"; //intention
-            //string userInput1 = "Sam' OR 1=1 --";
+            //string userInput1 = "Sam"; //intention
+            string userInput1 = "Sam' OR 1=1 --";
 
             Console.WriteLine("-----DANGER---------");
             using (var db = MainDbContext.DbContext())
@@ -166,11 +168,11 @@ namespace AppConsole
 
         private static async Task SQLInjectionAsync2()
         {
-            string userInput1 = "Sam"; //intention
-            string userInput2 = "Baggins"; //intention
+            //string userInput1 = "Sam"; //intention
+            //string userInput2 = "Baggins"; //intention
 
-            //string userInput1 = "' or ''='' --";
-            //string userInput2 = "Baggins"; 
+            string userInput1 = "' or ''='' --";
+            string userInput2 = "Baggins"; 
             Console.WriteLine("-----DANGER---------");
             using (var db = MainDbContext.DbContext())
             {
